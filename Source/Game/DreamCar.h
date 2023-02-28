@@ -2,6 +2,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "CMovementComponent.h"
+#include "CReplicateComponent.h"
 #include "DreamCar.generated.h"
 
 UCLASS()
@@ -19,50 +21,16 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	
-private:
-	FVector GetAirResistance();
-	FVector GetRollingResistance();
-	void UpdateLocation(float DeltaTime);
-	void UpdateRotation(float DeltaTime);
-
-
 private:
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 
+public:
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly)
+		UCMovementComponent* MovementComponent;
 
-	UFUNCTION(Reliable, Server, WithValidation)
-		void Server_MoveForward(float Value);
-	UFUNCTION(Reliable, Server, WithValidation)
-		void Server_MoveRight(float Value);
-	
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly)
+		UCReplicateComponent* ReplicateComponent;
 
-private:
-	UPROPERTY(EditAnywhere)
-		float Mass = 1000;
-	UPROPERTY(EditAnywhere)
-		float MaxForce = 10000;
-	UPROPERTY(EditAnywhere)
-		float TurningRadius = 10;
-	UPROPERTY(EditAnywhere)
-		float DragCoefficient = 16.f;
-	//AirResistance =InvDir* Velocity ^ 2 * Coefficient
-	//Coefficient = AirResistance(10000) / Velocity ^2
-	UPROPERTY(EditAnywhere)
-		float RollingCoefficient = 0.015f;
-
-
-private:
-	FVector Velocity;
-
-	UPROPERTY(Replicated)
-		FVector ReplicatedLocation;
-
-	UPROPERTY(Replicated)
-		FRotator ReplicatedRotation;
-
-	float Throttle;
-	float Steering;
 
 };
